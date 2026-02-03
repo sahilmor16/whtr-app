@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    IMAGE = "dockerhubusername/weather-devops"
+    IMAGE = "sahilmor16/whtr-app"
   }
 
   stages {
@@ -10,7 +10,7 @@ pipeline {
     stage('Checkout') {
       steps {
         git branch: 'main',
-            url: 'https://github.com/<your-username>/weather-devops-app.git'
+            url: 'https://github.com/sahilmor16/whtr-app.git'
       }
     }
 
