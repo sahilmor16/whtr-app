@@ -11,7 +11,7 @@ app.use(express.static(path.join(__dirname, "../frontend")));
 // weather API route
 app.get("/api/weather", async (req, res) => {
   const city = req.query.city;
-  const API_KEY = "162f98b072fcc413d0aa1f77380ac6e6";
+  const API_KEY = "apikey";
 
   try {
     const response = await axios.get(
