@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const path = require("path");
+const secrets = require('./secrets');
 
 const app = express();
 const PORT = 3000;
@@ -11,7 +12,7 @@ app.use(express.static(path.join(__dirname, "../frontend")));
 // weather API route
 app.get("/api/weather", async (req, res) => {
   const city = req.query.city;
-  const API_KEY = "162f98b072fcc413d0aa1f77380ac6e6";
+  const API_KEY = secrets.API_KEY;
 
   try {
     const response = await axios.get(
