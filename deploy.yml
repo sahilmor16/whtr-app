@@ -1,0 +1,60 @@
+---
+- name: Deploy Weather App
+  hosts: local # change to 'local' for local testing
+  become: yes
+
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Copy Nginx config
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/sites-available/weather-app
+      notify:
+        - Restart Nginx
+
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx/sites-available/weather-app
+        dest: /etc/nginx/sites-enabled/weather-app
+        state: link
+      notify:
+        - Restart Nginx
+
+    - name: Ensure default Nginx site is disabled
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify:
+        - Restart Nginx
+
+    - name: Pull latest Docker image
+      community.docker.docker_image:
+        name: yourusername/weather-app
+        source: pull
+        tag: latest
+
+    - name: Stop old container
+      community.docker.docker_container:
+        name: weather-app
+        state: absent
+
+    - name: Run new container
+      community.docker.docker_container:
+        name: weather-app
+        image: yourusername/weather-app:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "3000:3000"
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
